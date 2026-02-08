@@ -1199,12 +1199,15 @@
             const ctx = document.getElementById('profileChart');
             const chartWrapper = document.querySelector('.chart-wrapper');
             
-            // Show canvas and clean any custom HTML from revised version
+            // Show canvas and remove any custom scale visualizations
             ctx.style.display = 'block';
-            const customContent = chartWrapper.querySelector('div:not(.chart-wrapper)');
-            if (customContent && customContent.id !== 'profileChart') {
-                customContent.remove();
-            }
+            
+            // Remove all children except the canvas
+            Array.from(chartWrapper.children).forEach(child => {
+                if (child.id !== 'profileChart') {
+                    child.remove();
+                }
+            });
             
             if (currentChart) {
                 currentChart.destroy();
@@ -1277,12 +1280,15 @@
             const ctx = document.getElementById('profileChart');
             const chartWrapper = document.querySelector('.chart-wrapper');
             
-            // Show canvas and clean any custom HTML from revised version
+            // Show canvas and remove any custom scale visualizations
             ctx.style.display = 'block';
-            const customContent = chartWrapper.querySelector('div:not(.chart-wrapper)');
-            if (customContent && customContent.id !== 'profileChart') {
-                customContent.remove();
-            }
+            
+            // Remove all children except the canvas
+            Array.from(chartWrapper.children).forEach(child => {
+                if (child.id !== 'profileChart') {
+                    child.remove();
+                }
+            });
             
             if (currentChart) {
                 currentChart.destroy();
@@ -1381,8 +1387,12 @@
                 currentChart.destroy();
             }
             
-            // Clear wrapper and create bipolar scales
-            chartWrapper.innerHTML = '';
+            // Remove all children except the canvas
+            Array.from(chartWrapper.children).forEach(child => {
+                if (child.id !== 'profileChart') {
+                    child.remove();
+                }
+            });
             
             const scalesContainer = document.createElement('div');
             scalesContainer.style.cssText = 'padding: 20px; background: white; border-radius: 8px; border: 2px solid #000;';
@@ -1907,11 +1917,13 @@
             if (currentVersion === 'original') {
                 // Ensure canvas is visible and wrapper is clean
                 ctx.style.display = 'block';
-                // Clear any custom HTML from revised version
-                const customContent = chartWrapper.querySelector('div');
-                if (customContent && customContent !== ctx.parentElement) {
-                    customContent.remove();
-                }
+                
+                // Remove all children except the canvas
+                Array.from(chartWrapper.children).forEach(child => {
+                    if (child.id !== 'profileChart') {
+                        child.remove();
+                    }
+                });
                 
                 // For original version: use radar chart
                 const qualityNames = measurements[0].data.map(d => d.name);
@@ -1999,10 +2011,13 @@
             } else if (currentVersion === 'advanced') {
                 // Ensure canvas is visible and wrapper is clean
                 ctx.style.display = 'block';
-                const customContent = chartWrapper.querySelector('div');
-                if (customContent && customContent !== ctx.parentElement) {
-                    customContent.remove();
-                }
+                
+                // Remove all children except the canvas
+                Array.from(chartWrapper.children).forEach(child => {
+                    if (child.id !== 'profileChart') {
+                        child.remove();
+                    }
+                });
                 
                 // For advanced: use line chart showing each quality over time
                 const qualityNames = measurements[0].data.map(d => d.name);
@@ -2136,14 +2151,18 @@
                 });
             } else if (currentVersion === 'revised') {
                 // For revised: create bipolar scale visualization
-                // Get the wrapper and clear its contents
                 const chartWrapper = document.querySelector('.chart-wrapper');
                 
                 // Hide the canvas, we'll use custom HTML instead
                 const canvas = document.getElementById('profileChart');
                 canvas.style.display = 'none';
                 
-                chartWrapper.innerHTML = '';
+                // Remove all children except the canvas
+                Array.from(chartWrapper.children).forEach(child => {
+                    if (child.id !== 'profileChart') {
+                        child.remove();
+                    }
+                });
                 
                 const scalesContainer = document.createElement('div');
                 scalesContainer.style.cssText = 'padding: 20px; background: white; border-radius: 8px; border: 2px solid #000;';

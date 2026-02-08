@@ -1197,6 +1197,14 @@
             document.getElementById('tableSection').classList.add('hidden');
 
             const ctx = document.getElementById('profileChart');
+            const chartWrapper = document.querySelector('.chart-wrapper');
+            
+            // Show canvas and clean any custom HTML from revised version
+            ctx.style.display = 'block';
+            const customContent = chartWrapper.querySelector('div:not(.chart-wrapper)');
+            if (customContent && customContent.id !== 'profileChart') {
+                customContent.remove();
+            }
             
             if (currentChart) {
                 currentChart.destroy();
@@ -1267,6 +1275,14 @@
             document.getElementById('chartSection').classList.remove('hidden');
             
             const ctx = document.getElementById('profileChart');
+            const chartWrapper = document.querySelector('.chart-wrapper');
+            
+            // Show canvas and clean any custom HTML from revised version
+            ctx.style.display = 'block';
+            const customContent = chartWrapper.querySelector('div:not(.chart-wrapper)');
+            if (customContent && customContent.id !== 'profileChart') {
+                customContent.remove();
+            }
             
             if (currentChart) {
                 currentChart.destroy();
@@ -1356,88 +1372,99 @@
             document.getElementById('chartSection').classList.remove('hidden');
             
             const ctx = document.getElementById('profileChart');
+            const chartWrapper = document.querySelector('.chart-wrapper');
+            
+            // Hide canvas, use custom HTML
+            ctx.style.display = 'none';
             
             if (currentChart) {
                 currentChart.destroy();
             }
-
-            currentChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: data.map(d => d.name),
-                    datasets: [{
-                        label: 'Bipolaire Score',
-                        data: data.map(d => d.bipolar),
-                        backgroundColor: data.map(d => {
-                            if (d.bipolar <= 3) return 'rgba(239, 68, 68, 0.4)';
-                            if (d.bipolar <= 5) return 'rgba(245, 158, 11, 0.4)';
-                            return 'rgba(16, 185, 129, 0.4)';
-                        }),
-                        borderColor: data.map(d => {
-                            if (d.bipolar <= 3) return 'rgba(239, 68, 68, 0.6)';
-                            if (d.bipolar <= 5) return 'rgba(245, 158, 11, 0.6)';
-                            return 'rgba(16, 185, 129, 0.6)';
-                        }),
-                        borderWidth: 1,
-                        borderRadius: 4,
-                        barThickness: 35
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    indexAxis: 'y',
-                    scales: {
-                        x: {
-                            min: 1,
-                            max: 7,
-                            ticks: { 
-                                color: '#000000',
-                                stepSize: 1,
-                                font: { size: 11 }
-                            },
-                            grid: { 
-                                color: 'rgba(51, 65, 85, 0.5)',
-                                drawBorder: false
-                            },
-                            border: {
-                                display: false
-                            }
-                        },
-                        y: {
-                            ticks: { 
-                                color: '#000000',
-                                font: { size: 12, weight: '400' }
-                            },
-                            grid: { 
-                                display: false
-                            },
-                            border: {
-                                display: false
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            backgroundColor: 'rgba(255, 255, 255, 0.98)',
-                            titleColor: '#000000',
-                            bodyColor: '#000000',
-                            borderColor: '#000000',
-                            borderWidth: 1,
-                            padding: 12,
-                            displayColors: false,
-                            callbacks: {
-                                label: function(context) {
-                                    return 'Score: ' + context.parsed.x + '/7';
-                                }
-                            }
-                        }
-                    }
+            
+            // Clear wrapper and create bipolar scales
+            chartWrapper.innerHTML = '';
+            
+            const scalesContainer = document.createElement('div');
+            scalesContainer.style.cssText = 'padding: 20px; background: white; border-radius: 8px; border: 2px solid #000;';
+            
+            const title = document.createElement('h3');
+            title.textContent = 'Bipolaire Schalen';
+            title.style.cssText = 'margin-bottom: 30px; font-size: 18px; font-weight: 600; text-align: center; color: #000;';
+            scalesContainer.appendChild(title);
+            
+            // Sort by importance (highest first)
+            const sortedData = [...data].sort((a, b) => b.importance - a.importance);
+            
+            sortedData.forEach((quality, index) => {
+                const scaleDiv = document.createElement('div');
+                scaleDiv.style.cssText = 'margin-bottom: 40px; padding: 15px; background: #fafafa; border-radius: 8px;';
+                
+                // Quality name and importance
+                const header = document.createElement('div');
+                header.style.cssText = 'display: flex; justify-content: space-between; margin-bottom: 8px;';
+                
+                const qualityName = document.createElement('div');
+                qualityName.textContent = quality.name;
+                qualityName.style.cssText = 'font-weight: 600; font-size: 14px; color: #000;';
+                
+                const importance = document.createElement('div');
+                importance.textContent = `Belangrijkheid: ${quality.importance}`;
+                importance.style.cssText = 'font-size: 12px; color: #000;';
+                
+                header.appendChild(qualityName);
+                header.appendChild(importance);
+                scaleDiv.appendChild(header);
+                
+                // Labels row
+                const labelsRow = document.createElement('div');
+                labelsRow.style.cssText = 'display: flex; justify-content: space-between; margin-bottom: 5px; margin-top: 15px; font-size: 13px; color: #000;';
+                
+                const leftLabel = document.createElement('div');
+                leftLabel.textContent = quality.opposite || 'Laag';
+                leftLabel.style.cssText = 'flex: 1; text-align: left; font-style: italic;';
+                
+                const rightLabel = document.createElement('div');
+                rightLabel.textContent = quality.definition || quality.name;
+                rightLabel.style.cssText = 'flex: 1; text-align: right; font-weight: 500;';
+                
+                labelsRow.appendChild(leftLabel);
+                labelsRow.appendChild(rightLabel);
+                scaleDiv.appendChild(labelsRow);
+                
+                // Scale bar with position marker
+                const scaleBar = document.createElement('div');
+                scaleBar.style.cssText = 'position: relative; height: 30px; background: linear-gradient(to right, #ef4444 0%, #f59e0b 50%, #10b981 100%); border-radius: 15px; border: 2px solid #000; margin: 15px 0;';
+                
+                // Position marker
+                const position = ((quality.bipolar - 1) / 6) * 100; // Convert 1-7 to 0-100%
+                const marker = document.createElement('div');
+                marker.style.cssText = `position: absolute; top: 50%; left: ${position}%; transform: translate(-50%, -50%); width: 20px; height: 20px; background: #000; border: 3px solid #fff; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.3); z-index: 10;`;
+                
+                scaleBar.appendChild(marker);
+                
+                // Score label below marker
+                const scoreLabel = document.createElement('div');
+                scoreLabel.textContent = quality.bipolar;
+                scoreLabel.style.cssText = `position: absolute; top: 35px; left: ${position}%; transform: translateX(-50%); font-size: 12px; font-weight: 600; color: #000;`;
+                scaleBar.appendChild(scoreLabel);
+                
+                scaleDiv.appendChild(scaleBar);
+                
+                // Numbered scale below
+                const numbersRow = document.createElement('div');
+                numbersRow.style.cssText = 'display: flex; justify-content: space-between; margin-top: 40px; font-size: 11px; color: #000;';
+                for (let i = 1; i <= 7; i++) {
+                    const num = document.createElement('span');
+                    num.textContent = i;
+                    num.style.cssText = 'width: 14.28%; text-align: center;';
+                    numbersRow.appendChild(num);
                 }
+                scaleDiv.appendChild(numbersRow);
+                
+                scalesContainer.appendChild(scaleDiv);
             });
+            
+            chartWrapper.appendChild(scalesContainer);
         }
 
         function createAdvancedTable(data) {
@@ -1866,6 +1893,10 @@
             document.getElementById('tableSection').classList.add('hidden');
 
             const ctx = document.getElementById('profileChart');
+            const chartWrapper = document.querySelector('.chart-wrapper');
+            
+            // Reset visibility - show canvas by default, hide for revised version
+            ctx.style.display = 'block';
             
             if (currentChart) {
                 currentChart.destroy();
@@ -1874,6 +1905,14 @@
             const measurements = measurementIndices.map(i => profile.measurements[i]);
             
             if (currentVersion === 'original') {
+                // Ensure canvas is visible and wrapper is clean
+                ctx.style.display = 'block';
+                // Clear any custom HTML from revised version
+                const customContent = chartWrapper.querySelector('div');
+                if (customContent && customContent !== ctx.parentElement) {
+                    customContent.remove();
+                }
+                
                 // For original version: use radar chart
                 const qualityNames = measurements[0].data.map(d => d.name);
 
@@ -1957,8 +1996,15 @@
                         }
                     }
                 });
-            } else if (currentVersion === 'advanced' || currentVersion === 'revised') {
-                // For advanced/revised: use line chart showing each quality over time
+            } else if (currentVersion === 'advanced') {
+                // Ensure canvas is visible and wrapper is clean
+                ctx.style.display = 'block';
+                const customContent = chartWrapper.querySelector('div');
+                if (customContent && customContent !== ctx.parentElement) {
+                    customContent.remove();
+                }
+                
+                // For advanced: use line chart showing each quality over time
                 const qualityNames = measurements[0].data.map(d => d.name);
                 const measurementLabels = measurements.map(m => m.label);
 
@@ -1984,11 +2030,7 @@
                     // Get values for this quality across all measurements
                     const dataPoints = measurements.map(measurement => {
                         const quality = measurement.data[qualityIndex];
-                        if (currentVersion === 'advanced') {
-                            return quality.current;
-                        } else {
-                            return quality.bipolar;
-                        }
+                        return quality.current;
                     });
 
                     return {
@@ -2019,7 +2061,7 @@
                         scales: {
                             y: {
                                 beginAtZero: true,
-                                max: currentVersion === 'advanced' ? 10 : 7,
+                                max: 10,
                                 ticks: { 
                                     color: '#000000',
                                     stepSize: 1,
@@ -2034,7 +2076,7 @@
                                 },
                                 title: {
                                     display: true,
-                                    text: currentVersion === 'advanced' ? 'Score (1-10)' : 'Score (1-7)',
+                                    text: 'Score (1-10)',
                                     color: '#000000',
                                     font: { size: 12 }
                                 }
@@ -2092,6 +2134,124 @@
                         }
                     }
                 });
+            } else if (currentVersion === 'revised') {
+                // For revised: create bipolar scale visualization
+                // Get the wrapper and clear its contents
+                const chartWrapper = document.querySelector('.chart-wrapper');
+                
+                // Hide the canvas, we'll use custom HTML instead
+                const canvas = document.getElementById('profileChart');
+                canvas.style.display = 'none';
+                
+                chartWrapper.innerHTML = '';
+                
+                const scalesContainer = document.createElement('div');
+                scalesContainer.style.cssText = 'padding: 20px; background: white; border-radius: 8px; border: 2px solid #000;';
+                
+                const title = document.createElement('h3');
+                title.textContent = measurements.length > 1 ? 'Bipolaire Schalen - Vergelijking' : 'Bipolaire Schalen - ' + measurements[0].label;
+                title.style.cssText = 'margin-bottom: 30px; font-size: 18px; font-weight: 600; text-align: center; color: #000;';
+                scalesContainer.appendChild(title);
+                
+                // Get the first measurement for the quality structure and importance
+                const firstMeasurement = measurements[0];
+                
+                // Sort qualities by importance (highest first)
+                const sortedData = [...firstMeasurement.data].sort((a, b) => b.importance - a.importance);
+                
+                sortedData.forEach((quality, qualityIndex) => {
+                    const scaleDiv = document.createElement('div');
+                    scaleDiv.style.cssText = 'margin-bottom: 40px; padding: 15px; background: #fafafa; border-radius: 8px;';
+                    
+                    // Quality name and importance
+                    const header = document.createElement('div');
+                    header.style.cssText = 'display: flex; justify-content: space-between; margin-bottom: 8px;';
+                    
+                    const qualityName = document.createElement('div');
+                    qualityName.textContent = quality.name;
+                    qualityName.style.cssText = 'font-weight: 600; font-size: 14px; color: #000;';
+                    
+                    const importance = document.createElement('div');
+                    importance.textContent = `Belangrijkheid: ${quality.importance}`;
+                    importance.style.cssText = 'font-size: 12px; color: #000;';
+                    
+                    header.appendChild(qualityName);
+                    header.appendChild(importance);
+                    scaleDiv.appendChild(header);
+                    
+                    // Labels row
+                    const labelsRow = document.createElement('div');
+                    labelsRow.style.cssText = 'display: flex; justify-content: space-between; margin-bottom: 5px; margin-top: 15px; font-size: 13px; color: #000;';
+                    
+                    const leftLabel = document.createElement('div');
+                    leftLabel.textContent = quality.opposite || 'Laag';
+                    leftLabel.style.cssText = 'flex: 1; text-align: left; font-style: italic;';
+                    
+                    const rightLabel = document.createElement('div');
+                    rightLabel.textContent = quality.definition || quality.name;
+                    rightLabel.style.cssText = 'flex: 1; text-align: right; font-weight: 500;';
+                    
+                    labelsRow.appendChild(leftLabel);
+                    labelsRow.appendChild(rightLabel);
+                    scaleDiv.appendChild(labelsRow);
+                    
+                    // Create a scale for each measurement
+                    measurements.forEach((measurement, measurementIdx) => {
+                        const measurementQuality = measurement.data.find(q => q.name === quality.name);
+                        if (!measurementQuality) return;
+                        
+                        const measurementContainer = document.createElement('div');
+                        measurementContainer.style.cssText = 'margin: 15px 0;';
+                        
+                        // Measurement label
+                        if (measurements.length > 1) {
+                            const measurementLabel = document.createElement('div');
+                            measurementLabel.textContent = measurement.label;
+                            measurementLabel.style.cssText = 'font-size: 11px; color: #000; margin-bottom: 5px; font-weight: 500;';
+                            measurementContainer.appendChild(measurementLabel);
+                        }
+                        
+                        // Scale bar with position marker
+                        const scaleBar = document.createElement('div');
+                        scaleBar.style.cssText = 'position: relative; height: 30px; background: linear-gradient(to right, #ef4444 0%, #f59e0b 50%, #10b981 100%); border-radius: 15px; border: 2px solid #000;';
+                        
+                        // Position marker
+                        const position = ((measurementQuality.bipolar - 1) / 6) * 100; // Convert 1-7 to 0-100%
+                        const markerColors = [
+                            '#2563eb', '#10b981', '#f59e0b', '#ef4444', '#a855f7'
+                        ];
+                        const markerColor = measurements.length > 1 ? markerColors[measurementIdx % markerColors.length] : '#000';
+                        
+                        const marker = document.createElement('div');
+                        marker.style.cssText = `position: absolute; top: 50%; left: ${position}%; transform: translate(-50%, -50%); width: 20px; height: 20px; background: ${markerColor}; border: 3px solid #fff; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.3); z-index: 10;`;
+                        
+                        scaleBar.appendChild(marker);
+                        
+                        // Score label below marker
+                        const scoreLabel = document.createElement('div');
+                        scoreLabel.textContent = measurementQuality.bipolar;
+                        scoreLabel.style.cssText = `position: absolute; top: 35px; left: ${position}%; transform: translateX(-50%); font-size: 12px; font-weight: 600; color: #000;`;
+                        scaleBar.appendChild(scoreLabel);
+                        
+                        measurementContainer.appendChild(scaleBar);
+                        scaleDiv.appendChild(measurementContainer);
+                    });
+                    
+                    // Numbered scale below (only once per quality)
+                    const numbersRow = document.createElement('div');
+                    numbersRow.style.cssText = 'display: flex; justify-content: space-between; margin-top: 40px; font-size: 11px; color: #000;';
+                    for (let i = 1; i <= 7; i++) {
+                        const num = document.createElement('span');
+                        num.textContent = i;
+                        num.style.cssText = 'width: 14.28%; text-align: center;';
+                        numbersRow.appendChild(num);
+                    }
+                    scaleDiv.appendChild(numbersRow);
+                    
+                    scalesContainer.appendChild(scaleDiv);
+                });
+                
+                chartWrapper.appendChild(scalesContainer);
             }
         }
 

@@ -217,6 +217,15 @@
             background: #f5f5f5;
             color: #000000;
             cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        /* Highlight editable fields when in "add measurement" mode */
+        .measurement-mode input[type="range"]:not(:disabled),
+        .measurement-mode input[type="number"]:not(:disabled) {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
         }
 
         textarea {
@@ -954,10 +963,13 @@
                     <span id="profileStatusText"></span>
                 </div>
                 <div id="newMeasurementHelp" style="margin-top: 0.5rem; padding: 1rem; border-radius: 4px; background: #fef3c7; border: 2px solid #f59e0b; display: none;">
-                    <strong style="color: #92400e;">Nieuwe meting toevoegen:</strong>
-                    <p style="color: #78350f; margin-top: 0.5rem; font-size: 0.9rem;">
-                        Pas hieronder de scores aan (de kwaliteiten blijven hetzelfde). Klik daarna op "Nieuwe Meting Toevoegen" om deze scores als nieuwe meting op te slaan.
+                    <strong style="color: #92400e;">📝 Nieuwe meting toevoegen:</strong>
+                    <p style="color: #78350f; margin-top: 0.5rem; margin-bottom: 0.5rem; font-size: 0.9rem;">
+                        De velden hieronder tonen je vorige meting. Pas de <strong>scores</strong> aan voor de nieuwe situatie en klik op "Nieuwe Meting Toevoegen".
                     </p>
+                    <button onclick="resetScoresForNewMeasurement()" style="background: #f59e0b; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">
+                        🔄 Reset alle scores naar neutraal
+                    </button>
                 </div>
             </div>
 
@@ -1752,6 +1764,9 @@
             document.getElementById('numQualities').value = measurementData.length;
             document.getElementById('numQualities').disabled = true; // Can't change number of qualities
             generateQualityInputs();
+            
+            // Add visual indicator for editable fields
+            document.getElementById('qualitiesContainer').classList.add('measurement-mode');
 
             // Fill in data
             measurementData.forEach((item, index) => {
@@ -2274,12 +2289,49 @@
             }
         }
 
+        function resetScoresForNewMeasurement() {
+            if (!currentProfileId) return;
+            
+            const num = parseInt(document.getElementById('numQualities').value);
+            
+            if (currentVersion === 'original') {
+                // Reset all ratings to 5 (middle value)
+                for (let i = 1; i <= num; i++) {
+                    const slider = document.getElementById(`rating_${i}_slider`);
+                    if (slider && !slider.disabled) {
+                        slider.value = 5;
+                        document.getElementById(`rating_${i}`).textContent = 5;
+                    }
+                }
+            } else if (currentVersion === 'advanced') {
+                // Reset current scores to 5 (middle value)
+                for (let i = 1; i <= num; i++) {
+                    const currentInput = document.getElementById(`current_${i}`);
+                    if (currentInput && !currentInput.disabled) {
+                        currentInput.value = 5;
+                    }
+                }
+            } else if (currentVersion === 'revised') {
+                // Reset bipolar scores to 4 (middle of 1-7 scale)
+                for (let i = 1; i <= num; i++) {
+                    const bipolarSlider = document.getElementById(`bipolar_${i}`);
+                    if (bipolarSlider && !bipolarSlider.disabled) {
+                        bipolarSlider.value = 4;
+                        document.getElementById(`bipolar_rating_${i}`).textContent = 4;
+                    }
+                }
+            }
+            
+            alert('Alle scores zijn gereset naar neutrale waardes. Pas ze nu aan voor je nieuwe meting!');
+        }
+
         function resetProfile() {
             document.getElementById('profileName').value = '';
             document.getElementById('profileName').disabled = false;
             document.getElementById('numQualities').value = 8;
             document.getElementById('numQualities').disabled = false;
             document.getElementById('qualitiesContainer').innerHTML = '';
+            document.getElementById('qualitiesContainer').classList.remove('measurement-mode');
             document.getElementById('chartSection').classList.add('hidden');
             document.getElementById('tableSection').classList.add('hidden');
             currentProfileId = null; // Clear current profile

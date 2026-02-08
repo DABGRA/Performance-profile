@@ -25,9 +25,9 @@
             --bg-main: #ffffff;
             --bg-card: #ffffff;
             --bg-card-hover: #f8f9fa;
-            --text-primary: #1a1a1a;
-            --text-secondary: #4a4a4a;
-            --text-muted: #6b7280;
+            --text-primary: #000000;
+            --text-secondary: #000000;
+            --text-muted: #000000;
             --border: #000000;
             --border-light: #e5e7eb;
         }
@@ -35,7 +35,7 @@
         body {
             font-family: 'Poppins', sans-serif;
             background: #f5f5f5;
-            color: var(--text-primary);
+            color: #000000;
             min-height: 100vh;
             padding: 2rem;
             position: relative;
@@ -69,13 +69,13 @@
         h1 {
             font-size: 3rem;
             font-weight: 700;
-            color: var(--text-primary);
+            color: #000000;
             margin-bottom: 0.5rem;
             letter-spacing: -0.02em;
         }
 
         .subtitle {
-            color: var(--text-secondary);
+            color: #000000;
             font-size: 1.1rem;
             font-weight: 400;
         }
@@ -121,8 +121,9 @@
 
         .version-tag {
             display: inline-block;
-            background: var(--text-primary);
-            color: white;
+            background: #f5f5f5;
+            color: #000000;
+            border: 2px solid var(--text-primary);
             padding: 0.25rem 0.75rem;
             border-radius: 4px;
             font-size: 0.75rem;
@@ -135,11 +136,11 @@
         .version-card h3 {
             font-size: 1.5rem;
             margin-bottom: 0.5rem;
-            color: var(--text-primary);
+            color: #000000;
         }
 
         .version-card p {
-            color: var(--text-muted);
+            color: #000000;
             font-size: 0.9rem;
             line-height: 1.6;
             margin-bottom: 1rem;
@@ -151,7 +152,7 @@
         }
 
         .version-features li {
-            color: var(--text-secondary);
+            color: #000000;
             font-size: 0.85rem;
             padding: 0.4rem 0;
             padding-left: 1.5rem;
@@ -181,7 +182,7 @@
 
         label {
             display: block;
-            color: var(--text-primary);
+            color: #000000;
             font-weight: 600;
             margin-bottom: 0.5rem;
             font-size: 0.9rem;
@@ -197,7 +198,7 @@
             background: white;
             border: 2px solid var(--border);
             border-radius: 4px;
-            color: var(--text-primary);
+            color: #000000;
             font-size: 1rem;
             font-family: 'Poppins', sans-serif;
             transition: all 0.3s ease;
@@ -214,7 +215,7 @@
         input[type="number"]:disabled,
         textarea:disabled {
             background: #f5f5f5;
-            color: var(--text-muted);
+            color: #000000;
             cursor: not-allowed;
         }
 
@@ -262,13 +263,14 @@
 
         .quality-name {
             font-weight: 600;
-            color: var(--text-primary);
+            color: #000000;
             font-size: 1.1rem;
         }
 
         .quality-number {
-            background: var(--text-primary);
-            color: white;
+            background: #f5f5f5;
+            color: #000000;
+            border: 2px solid var(--text-primary);
             width: 32px;
             height: 32px;
             border-radius: 4px;
@@ -288,7 +290,7 @@
             justify-content: space-between;
             margin-bottom: 0.5rem;
             font-size: 0.85rem;
-            color: var(--text-muted);
+            color: #000000;
         }
 
         input[type="range"] {
@@ -336,8 +338,8 @@
         }
 
         button {
-            background: var(--text-primary);
-            color: white;
+            background: #f5f5f5;
+            color: #000000;
             border: 2px solid var(--text-primary);
             padding: 0.875rem 2rem;
             border-radius: 4px;
@@ -358,7 +360,8 @@
 
         button:hover {
             background: var(--text-secondary);
-            border-color: var(--text-secondary);
+            border-color: #000000;
+            color: #ffffff;
             transform: translateY(-1px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
@@ -370,22 +373,24 @@
         button.secondary {
             background: white;
             border: 2px solid var(--border);
-            color: var(--text-primary);
+            color: #000000;
         }
 
         button.secondary:hover {
             background: var(--bg-card-hover);
-            border-color: var(--text-primary);
+            border-color: #000000;
         }
 
         button.danger {
             background: var(--danger);
             border-color: var(--danger);
+            color: #ffffff;
         }
 
         button.danger:hover {
             background: #dc2626;
             border-color: #dc2626;
+            color: #ffffff;
         }
 
         .button-group {
@@ -425,14 +430,16 @@
         }
 
         thead {
-            background: var(--text-primary);
+            background: #f5f5f5;
+            border-bottom: 2px solid var(--border);
         }
 
         th {
             padding: 1rem;
             text-align: left;
             font-weight: 600;
-            color: white;
+            color: #000000;
+            background: #f5f5f5;
             text-transform: uppercase;
             font-size: 0.85rem;
             letter-spacing: 0.05em;
@@ -441,7 +448,7 @@
         td {
             padding: 1rem;
             border-bottom: 1px solid var(--border-light);
-            color: var(--text-secondary);
+            color: #000000;
         }
 
         tr:last-child td {
@@ -514,13 +521,13 @@
 
         .profile-name {
             font-weight: 600;
-            color: var(--text-primary);
+            color: #000000;
             margin-bottom: 0.25rem;
         }
 
         .profile-meta {
             font-size: 0.85rem;
-            color: var(--text-muted);
+            color: #000000;
         }
 
         .profile-actions {
@@ -539,14 +546,14 @@
         }
 
         .icon-btn:hover {
-            border-color: var(--text-primary);
+            border-color: #000000;
             background: var(--bg-card-hover);
         }
 
         .empty-state {
             text-align: center;
             padding: 3rem;
-            color: var(--text-muted);
+            color: #000000;
         }
 
         .empty-state-icon {
@@ -613,7 +620,7 @@
 
         .situations-container h3 {
             margin-bottom: 1rem;
-            color: var(--text-primary);
+            color: #000000;
         }
 
         .hidden {
@@ -661,14 +668,14 @@
         }
 
         .modal-header h2 {
-            color: var(--text-primary);
+            color: #000000;
             font-size: 1.5rem;
         }
 
         .close-btn {
             background: none;
             border: none;
-            color: var(--text-primary);
+            color: #000000;
             font-size: 2rem;
             cursor: pointer;
             padding: 0;
@@ -719,12 +726,12 @@
 
         .measurement-label {
             font-weight: 600;
-            color: var(--text-primary);
+            color: #000000;
             font-size: 1.1rem;
         }
 
         .measurement-date {
-            color: var(--text-muted);
+            color: #000000;
             font-size: 0.9rem;
         }
 
@@ -752,7 +759,7 @@
             margin: 0;
             text-transform: none;
             font-weight: 400;
-            color: var(--text-secondary);
+            color: #000000;
         }
 
         /* Navigation Header */
@@ -803,14 +810,14 @@
         .nav-title {
             font-size: 1.5rem;
             font-weight: 700;
-            color: var(--text-primary);
+            color: #000000;
             margin: 0;
             line-height: 1.2;
         }
 
         .nav-subtitle {
             font-size: 0.875rem;
-            color: var(--text-secondary);
+            color: #000000;
             margin: 0;
             line-height: 1.2;
         }
@@ -830,14 +837,14 @@
             background: white;
             border: 2px solid var(--border);
             border-radius: 4px;
-            color: var(--text-primary);
+            color: #000000;
             text-decoration: none;
             transition: all 0.3s ease;
         }
 
         .nav-icon-btn:hover {
             background: var(--bg-card-hover);
-            border-color: var(--text-primary);
+            border-color: #000000;
         }
 
         .nav-icon-btn svg {
@@ -994,7 +1001,7 @@
                 <div id="measurementsList" class="measurements-list"></div>
                 <div class="comparison-controls">
                     <h3>Vergelijk Metingen</h3>
-                    <p style="color: var(--text-muted); margin-bottom: 1rem;">Selecteer meerdere metingen om te vergelijken in een grafiek</p>
+                    <p style="color: #000000; margin-bottom: 1rem;">Selecteer meerdere metingen om te vergelijken in een grafiek</p>
                     <div id="comparisonCheckboxes"></div>
                     <button onclick="compareSelectedMeasurements()" style="margin-top: 1rem;">Vergelijk Geselecteerde</button>
                 </div>
@@ -1133,7 +1140,7 @@
             situationsDiv.className = 'situations-container';
             situationsDiv.innerHTML = `
                 <h3>Belangrijke Situaties</h3>
-                <p style="color: var(--text-muted); margin-bottom: 1rem;">
+                <p style="color: #000000; margin-bottom: 1rem;">
                     Beschrijf situaties waarin deze kwaliteiten cruciaal zijn (bijv. onder druk, bij uitdagingen, tegenslag)
                 </p>
                 <textarea id="situations" placeholder="Bijv: 'Bij een achterstand in de laatste minuten van de wedstrijd'"></textarea>
@@ -1222,15 +1229,15 @@
                             max: 10,
                             ticks: {
                                 stepSize: 2,
-                                color: '#94a3b8',
+                                color: '#000000',
                                 backdropColor: 'transparent',
                                 font: { size: 11 }
                             },
                             grid: {
-                                color: '#334155'
+                                color: '#cccccc'
                             },
                             pointLabels: {
-                                color: '#f1f5f9',
+                                color: '#000000',
                                 font: {
                                     size: 12,
                                     weight: '500'
@@ -1243,10 +1250,10 @@
                             display: false
                         },
                         tooltip: {
-                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                            titleColor: '#f1f5f9',
-                            bodyColor: '#cbd5e1',
-                            borderColor: '#334155',
+                            backgroundColor: 'rgba(255, 255, 255, 0.98)',
+                            titleColor: '#000000',
+                            bodyColor: '#000000',
+                            borderColor: '#000000',
                             borderWidth: 1,
                             padding: 12,
                             displayColors: false
@@ -1298,7 +1305,7 @@
                         x: {
                             beginAtZero: true,
                             ticks: { 
-                                color: '#94a3b8',
+                                color: '#000000',
                                 font: { size: 11 }
                             },
                             grid: { 
@@ -1311,7 +1318,7 @@
                         },
                         y: {
                             ticks: { 
-                                color: '#cbd5e1',
+                                color: '#000000',
                                 font: { size: 12, weight: '400' }
                             },
                             grid: { 
@@ -1327,10 +1334,10 @@
                             display: false
                         },
                         tooltip: {
-                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                            titleColor: '#f1f5f9',
-                            bodyColor: '#cbd5e1',
-                            borderColor: '#334155',
+                            backgroundColor: 'rgba(255, 255, 255, 0.98)',
+                            titleColor: '#000000',
+                            bodyColor: '#000000',
+                            borderColor: '#000000',
                             borderWidth: 1,
                             padding: 12,
                             displayColors: false,
@@ -1385,7 +1392,7 @@
                             min: 1,
                             max: 7,
                             ticks: { 
-                                color: '#94a3b8',
+                                color: '#000000',
                                 stepSize: 1,
                                 font: { size: 11 }
                             },
@@ -1399,7 +1406,7 @@
                         },
                         y: {
                             ticks: { 
-                                color: '#cbd5e1',
+                                color: '#000000',
                                 font: { size: 12, weight: '400' }
                             },
                             grid: { 
@@ -1415,10 +1422,10 @@
                             display: false
                         },
                         tooltip: {
-                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                            titleColor: '#f1f5f9',
-                            bodyColor: '#cbd5e1',
-                            borderColor: '#334155',
+                            backgroundColor: 'rgba(255, 255, 255, 0.98)',
+                            titleColor: '#000000',
+                            bodyColor: '#000000',
+                            borderColor: '#000000',
                             borderWidth: 1,
                             padding: 12,
                             displayColors: false,
@@ -1519,7 +1526,7 @@
                 html += `
                     <div class="situations-container" style="margin-top: 2rem;">
                         <h3>Belangrijke Situaties</h3>
-                        <p style="color: var(--text-secondary); white-space: pre-wrap;">${situations}</p>
+                        <p style="color: #000000; white-space: pre-wrap;">${situations}</p>
                     </div>
                 `;
             }
@@ -1910,15 +1917,15 @@
                                 max: 10,
                                 ticks: {
                                     stepSize: 2,
-                                    color: '#94a3b8',
+                                    color: '#000000',
                                     backdropColor: 'transparent',
                                     font: { size: 11 }
                                 },
                                 grid: {
-                                    color: '#334155'
+                                    color: '#cccccc'
                                 },
                                 pointLabels: {
-                                    color: '#f1f5f9',
+                                    color: '#000000',
                                     font: {
                                         size: 12,
                                         weight: '500'
@@ -1929,22 +1936,22 @@
                         plugins: {
                             legend: {
                                 labels: {
-                                    color: '#f1f5f9',
+                                    color: '#000000',
                                     font: { size: 13 }
                                 }
                             },
                             tooltip: {
-                                backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                                titleColor: '#f1f5f9',
-                                bodyColor: '#cbd5e1',
-                                borderColor: '#334155',
+                                backgroundColor: 'rgba(255, 255, 255, 0.98)',
+                                titleColor: '#000000',
+                                bodyColor: '#000000',
+                                borderColor: '#000000',
                                 borderWidth: 1,
                                 padding: 12
                             },
                             title: {
                                 display: true,
                                 text: 'Vergelijking Metingen Over Tijd',
-                                color: '#f1f5f9',
+                                color: '#000000',
                                 font: { size: 16, weight: '600' }
                             }
                         }
@@ -2014,7 +2021,7 @@
                                 beginAtZero: true,
                                 max: currentVersion === 'advanced' ? 10 : 7,
                                 ticks: { 
-                                    color: '#94a3b8',
+                                    color: '#000000',
                                     stepSize: 1,
                                     font: { size: 11 }
                                 },
@@ -2028,13 +2035,13 @@
                                 title: {
                                     display: true,
                                     text: currentVersion === 'advanced' ? 'Score (1-10)' : 'Score (1-7)',
-                                    color: '#cbd5e1',
+                                    color: '#000000',
                                     font: { size: 12 }
                                 }
                             },
                             x: {
                                 ticks: { 
-                                    color: '#cbd5e1',
+                                    color: '#000000',
                                     font: { size: 12 }
                                 },
                                 grid: { 
@@ -2046,7 +2053,7 @@
                                 title: {
                                     display: true,
                                     text: 'Metingen',
-                                    color: '#cbd5e1',
+                                    color: '#000000',
                                     font: { size: 12 }
                                 }
                             }
@@ -2054,7 +2061,7 @@
                         plugins: {
                             legend: {
                                 labels: {
-                                    color: '#f1f5f9',
+                                    color: '#000000',
                                     font: { size: 12 },
                                     padding: 10,
                                     usePointStyle: true,
@@ -2063,10 +2070,10 @@
                                 position: 'right'
                             },
                             tooltip: {
-                                backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                                titleColor: '#f1f5f9',
-                                bodyColor: '#cbd5e1',
-                                borderColor: '#334155',
+                                backgroundColor: 'rgba(255, 255, 255, 0.98)',
+                                titleColor: '#000000',
+                                bodyColor: '#000000',
+                                borderColor: '#000000',
                                 borderWidth: 1,
                                 padding: 12,
                                 displayColors: true
@@ -2074,7 +2081,7 @@
                             title: {
                                 display: true,
                                 text: 'Ontwikkeling Kwaliteiten Over Tijd',
-                                color: '#f1f5f9',
+                                color: '#000000',
                                 font: { size: 16, weight: '600' },
                                 padding: { bottom: 20 }
                             }
@@ -2133,12 +2140,12 @@
 
             // Add header
             pdf.setFontSize(24);
-            pdf.setTextColor(37, 99, 235);
+            pdf.setTextColor(0, 0, 0);
             pdf.text('Performance Profiling', margin, yPosition);
             yPosition += 10;
 
             pdf.setFontSize(16);
-            pdf.setTextColor(100, 100, 100);
+            pdf.setTextColor(0, 0, 0);
             const versionNames = {
                 'original': 'Originele Versie (Butler & Hardy, 1992)',
                 'advanced': 'Geavanceerde Versie (Jones, 1993)',
@@ -2148,12 +2155,12 @@
             yPosition += 15;
 
             pdf.setFontSize(14);
-            pdf.setTextColor(50, 50, 50);
+            pdf.setTextColor(0, 0, 0);
             pdf.text(profileName, margin, yPosition);
             yPosition += 5;
             
             pdf.setFontSize(10);
-            pdf.setTextColor(150, 150, 150);
+            pdf.setTextColor(0, 0, 0);
             pdf.text(new Date().toLocaleDateString('nl-NL'), margin, yPosition);
             yPosition += 15;
 
@@ -2180,7 +2187,7 @@
             // Add table data
             if (currentVersion === 'original') {
                 pdf.setFontSize(12);
-                pdf.setTextColor(50, 50, 50);
+                pdf.setTextColor(0, 0, 0);
                 pdf.text('Kwaliteiten Overzicht', margin, yPosition);
                 yPosition += 8;
 
@@ -2199,15 +2206,15 @@
                         yPosition = margin;
                     }
                     
-                    pdf.setTextColor(50, 50, 50);
+                    pdf.setTextColor(0, 0, 0);
                     pdf.text(`${qualityName}:`, margin, yPosition);
-                    pdf.setTextColor(37, 99, 235);
+                    pdf.setTextColor(0, 0, 0);
                     pdf.text(`${rating}/10`, pageWidth - margin - 20, yPosition);
                     yPosition += 7;
                 }
             } else if (currentVersion === 'advanced') {
                 pdf.setFontSize(12);
-                pdf.setTextColor(50, 50, 50);
+                pdf.setTextColor(0, 0, 0);
                 pdf.text('Discrepancy Scores', margin, yPosition);
                 yPosition += 10;
 
@@ -2229,7 +2236,7 @@
                 data.sort((a, b) => b.discrepancy - a.discrepancy);
 
                 pdf.setFontSize(9);
-                pdf.setTextColor(100, 100, 100);
+                pdf.setTextColor(0, 0, 0);
                 pdf.text('Kwaliteit', margin, yPosition);
                 pdf.text('Belang', margin + 70, yPosition);
                 pdf.text('Ideaal', margin + 95, yPosition);
@@ -2248,30 +2255,30 @@
                         yPosition = margin;
                     }
 
-                    pdf.setTextColor(50, 50, 50);
+                    pdf.setTextColor(0, 0, 0);
                     pdf.text(item.name.substring(0, 25), margin, yPosition);
                     pdf.text(`${item.importance}/10`, margin + 70, yPosition);
                     pdf.text(`${item.ideal}/10`, margin + 95, yPosition);
                     pdf.text(`${item.current}/10`, margin + 120, yPosition);
                     
                     // Color code discrepancy
-                    if (item.discrepancy > 30) pdf.setTextColor(239, 68, 68);
-                    else if (item.discrepancy > 15) pdf.setTextColor(245, 158, 11);
-                    else pdf.setTextColor(16, 185, 129);
+                    if (item.discrepancy > 30) pdf.setTextColor(0, 0, 0);
+                    else if (item.discrepancy > 15) pdf.setTextColor(0, 0, 0);
+                    else pdf.setTextColor(0, 0, 0);
                     
                     pdf.text(`${item.discrepancy}`, margin + 145, yPosition);
                     yPosition += 7;
                 });
             } else if (currentVersion === 'revised') {
                 pdf.setFontSize(12);
-                pdf.setTextColor(50, 50, 50);
+                pdf.setTextColor(0, 0, 0);
                 pdf.text('Bipolaire Kwaliteiten', margin, yPosition);
                 yPosition += 10;
 
                 const num = parseInt(document.getElementById('numQualities').value);
 
                 pdf.setFontSize(9);
-                pdf.setTextColor(100, 100, 100);
+                pdf.setTextColor(0, 0, 0);
                 pdf.text('Kwaliteit', margin, yPosition);
                 pdf.text('Tegengestelde', margin + 60, yPosition);
                 pdf.text('Belang', margin + 120, yPosition);
@@ -2296,14 +2303,14 @@
                     const importance = parseInt(document.getElementById(`importance_${i}`).value);
                     const bipolar = parseInt(document.getElementById(`bipolar_${i}`).value);
                     
-                    pdf.setTextColor(50, 50, 50);
+                    pdf.setTextColor(0, 0, 0);
                     pdf.text(qualityName.substring(0, 20), margin, yPosition);
                     pdf.text(opposite.substring(0, 20), margin + 60, yPosition);
                     pdf.text(`${importance}/10`, margin + 120, yPosition);
                     
-                    if (bipolar <= 3) pdf.setTextColor(239, 68, 68);
-                    else if (bipolar <= 5) pdf.setTextColor(245, 158, 11);
-                    else pdf.setTextColor(16, 185, 129);
+                    if (bipolar <= 3) pdf.setTextColor(0, 0, 0);
+                    else if (bipolar <= 5) pdf.setTextColor(0, 0, 0);
+                    else pdf.setTextColor(0, 0, 0);
                     
                     pdf.text(`${bipolar}/7`, margin + 150, yPosition);
                     yPosition += 7;
@@ -2320,12 +2327,12 @@
                     }
 
                     pdf.setFontSize(12);
-                    pdf.setTextColor(50, 50, 50);
+                    pdf.setTextColor(0, 0, 0);
                     pdf.text('Belangrijke Situaties', margin, yPosition);
                     yPosition += 8;
 
                     pdf.setFontSize(10);
-                    pdf.setTextColor(100, 100, 100);
+                    pdf.setTextColor(0, 0, 0);
                     const lines = pdf.splitTextToSize(situations, pageWidth - (2 * margin));
                     pdf.text(lines, margin, yPosition);
                 }
@@ -2336,7 +2343,7 @@
             for (let i = 1; i <= totalPages; i++) {
                 pdf.setPage(i);
                 pdf.setFontSize(8);
-                pdf.setTextColor(150, 150, 150);
+                pdf.setTextColor(0, 0, 0);
                 pdf.text(
                     `Pagina ${i} van ${totalPages}`,
                     pageWidth - margin - 20,

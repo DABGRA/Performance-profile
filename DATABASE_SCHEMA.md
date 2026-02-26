@@ -1,13 +1,15 @@
 # Database Schema
 
-Supabase (PostgreSQL) — 19 active tables across 6 tiers. All tables have Row Level Security (RLS) enabled.
+Supabase (PostgreSQL) — 20 active tables across 6 tiers. All tables have Row Level Security (RLS) enabled.
 
 ---
 
 ## Tier 1 — User Management
 
 ### `profiles`
-Extends Supabase Auth `auth.users`. Created automatically on signup via trigger.
+Extends Supabase Auth `auth.users`. Aangemaakt automatisch via trigger bij elke invite. Wachtwoorden worden opgeslagen door Supabase Auth (`auth.users`) — nooit in `profiles`.
+
+**Invite flow**: Superuser/coach nodigt uit via `/api/admin/invite-user` → Supabase Admin API maakt user aan → Resend stuurt branded mail → gebruiker stelt wachtwoord in op `/auth/set-password`.
 
 | Column | Type | Notes |
 |---|---|---|
@@ -15,7 +17,11 @@ Extends Supabase Auth `auth.users`. Created automatically on signup via trigger.
 | `email` | text | |
 | `full_name` | text | |
 | `role` | enum | `superuser`, `coach`, `teamlid` |
-| `organization_id` | uuid FK → `organizations` | nullable for superuser |
+| `organization_id` | uuid FK → `organizations` | nullable voor superuser |
+| `team_id` | uuid FK → `teams` | direct team koppeling (uit invite metadata) |
+| `invited_by` | uuid FK → `profiles` | wie heeft deze gebruiker uitgenodigd |
+| `invited_at` | timestamptz | tijdstip van uitnodiging |
+| `onboarded` | boolean | true na eerste inlog + wachtwoord instellen |
 | `created_at` | timestamptz | |
 
 ### `organizations`
@@ -329,24 +335,45 @@ The U3 score is displayed as a horizontal bar chart with 0 as the x-axis. A posi
 | `outcome/performance/process_goals` | All | Own sessions | Read |
 
 
-## Database Schema - 22 Tables (Fully Relational & RLS Protected)
+---
+
+## API Routes
+
+### `POST /api/admin/invite-user`
+Maakt een nieuwe gebruiker aan via de Supabase Admin API (Service Role key vereist). Vereist authenticatie als superuser of coach.
+
+**Body:**
+```json
+{
+  "email": "sporter@example.com",
+  "full_name": "Jan de Vries",
+  "role": "teamlid",
+  "team_id": "uuid-van-team"
+}
+```
+
+**Wat er gebeurt:**
+1. Valideert dat aanroeper superuser is (of coach die alleen teamlid aanmaakt voor eigen team)
+2. `supabase.auth.admin.inviteUserByEmail()` — Supabase stuurt invite token
+3. Resend stuurt branded welkomstmail met instructies en link naar `/auth/set-password`
+4. `profiles` upsert met `invited_by`, `invited_at`, `team_id`
+
+### `POST /api/evaluaties/calculate`
+Sluit een campagne en berekent alle scores. Zie README voor de score formules.
+
 
 ### Tier 1: User Management & Organizations (4 tables)
 ```
-users
-├── id (uuid, pk)
-├── email (unique)
-├── role (superuser | coach | teamlid)
+profiles (extends auth.users — invite-only, geen zelfregistratie)
+├── id (uuid, pk, fk → auth.users)
+├── email, full_name, role (superuser|coach|teamlid)
+├── organization_id, team_id
+├── invited_by, invited_at, onboarded
 └── organizations
-    ├── id (uuid, pk)
-    ├── superuser_id (fk → users)
+    ├── id, name, superuser_id
     └── teams
-        ├── id (uuid, pk)
-        ├── coach_id (fk → users)
-        ├── season_start/end
-        └── team_members
-            ├── team_id (fk → teams)
-            └── user_id (fk → users, role=teamlid)
+        ├── id, name, coach_id, season_start/end
+        └── team_members (team_id, user_id)
 ```
 
 ### Tier 2: Goal Hierarchy (4 tables)
@@ -370,14 +397,12 @@ All support "shared_with_coach" flag
 
 ### Tier 4: Evaluations System (7 tables)
 ```
-questionnaire_questions (static, public)
-├── evaluation_campaigns
-│   ├── evaluation_responses_q1 (7 questions, 1-5 Likert)
-│   ├── evaluation_responses_q2 (20 questions, 1-5 Likert)
-│   └── evaluation_responses_q3 (20 questions, 1-5 Likert)
-│
-├── evaluation_summary_per_teamlid (avg across 3 questionnaires per period)
-└── evaluation_summary_per_team (team averages + U3-50% scores per period)
+questionnaire_definitions (scoring_method, norm_mean, norm_sd, has_external_norm)
+├── questionnaire_subscales (subscale_key, color, display_order)
+├── questionnaire_questions (question_text NL, question_text_en, is_reversed)
+├── evaluation_campaigns (team, period, status: draft→sent→in_progress→closed)
+│   └── evaluation_responses (raw_score per question per user)
+└── evaluation_team_summaries (team_mean, u3_score, z_score, p_value, significance)
 ```
 
 ### Tier 5: Coach Evaluations (1 table)
@@ -418,24 +443,16 @@ dashboard_individual_metrics
 - Only coach can create campaigns and evaluations
 - Sharing is explicit (shared_with_coach flag)
 
-## Migration Files
+## Migration Scripts (in volgorde uitvoeren)
 
 ```
-scripts/
-├── 01_create_users_and_orgs.sql
-├── 02_create_teams_and_members.sql
-├── 03_create_goal_hierarchy.sql
-├── 04_create_performance_profiles.sql
-├── 05_create_evaluations.sql
-├── 06_create_coach_evaluations.sql
-└── 07_create_dashboard_metrics.sql
+08_create_rls_policies.js                        — RLS voor alle tabellen
+09_phase4_questionnaire_schema.js                — Flexibel vragenlijst schema
+10_seed_questionnaire_1_psychological_safety.js  — Psychologische Veiligheid (7 vragen)
+15_seed_questionnaire_2_pnsss_final.js           — PNSSS (29 vragen, 6 subscalen)
+16_seed_questionnaire_3_smsii_final.js           — SMS-II (18 vragen, 6 subscalen)
+17_add_question_text_en.js                       — question_text_en kolom toevoegen
+18_fix_psych_safety.js                           — Likert labels + is_reversed flags
+19_add_norm_columns.js                           — norm_mean, norm_sd, has_external_norm; Edmondson (4.6, 0.5)
+20_extend_profiles_invite.js                     — invited_by, invited_at, team_id, onboarded aan profiles
 ```
-
-## Next Steps
-
-**Phase 2**: Need to execute migrations on Supabase
-- Connect your Supabase project
-- Run all 7 migration files
-- Set up environment variables
-
-Ready?

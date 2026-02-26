@@ -30,15 +30,19 @@ The platform supports the full evidence-based workflow of a sport psychology coa
 
 ### Auth
 - `/auth/login` — Email + password login (Supabase Auth)
+- `/auth/set-password` — Sporter/coach stelt wachtwoord in na uitnodiging (invite link landing)
 - `/auth/logout` — Session clear
 
 ### Superuser (`/dashboard/superuser/`)
 - `/` — Overview: user count, team count, campaign count, active questionnaires
+- `/gebruikers` — Gebruikersbeheer: alle coaches en teamleden inzien, uitnodigen, opnieuw uitnodigen
+- `/teams` — Teams inzien en beheren
 - `/vragenlijsten` — List all questionnaires
 - `/vragenlijsten/[id]` — Edit questionnaire: questions, subscales, recode flags, Likert labels
 
 ### Coach (`/dashboard/coach/`)
 - `/` — Home: team summary, recent activity
+- `/teamleden` — Teamleden uitnodigen en beheren (alleen eigen team)
 - `/doelstellingen` — Goal setting hub (three-phase workshop)
 - `/doelstellingen/outcome` — Outcome Goals workshop (max 5 per subgroup, select top 3)
 - `/doelstellingen/performance` — Performance Goals workshop (linked to outcome goals, max 10)
@@ -115,7 +119,38 @@ When a coach closes a campaign (`/api/evaluaties/calculate`):
 
 ---
 
-## Tech stack
+## User Management & Invite Flow
+
+Users are **never self-registered**. All accounts are created by a superuser or coach via invite.
+
+### How it works
+
+1. Superuser/coach vult naam + email in op `/dashboard/superuser/gebruikers` of `/dashboard/coach/teamleden`
+2. API route `/api/admin/invite-user` roept `supabase.auth.admin.inviteUserByEmail()` aan via de **Service Role key**
+3. Supabase genereert een tijdgebonden invite token en stuurt de standaard redirect
+4. **Resend** stuurt tegelijkertijd een branded welkomstmail met uitleg en de link naar `/auth/set-password`
+5. De gebruiker klikt op de link, stelt eigen wachtwoord in, en wordt doorgestuurd naar het juiste dashboard op basis van rol
+6. `profiles` wordt automatisch aangemaakt via een Supabase trigger die `full_name`, `role`, `team_id` uit de user metadata pakt
+
+### Wie mag wie uitnodigen
+
+| Uitnodiger | Mag uitnodigen | Rol vastgezet |
+|---|---|---|
+| Superuser | Coach of teamlid, elk team | Vrij te kiezen |
+| Coach | Alleen teamlid | Ja — altijd `teamlid`, altijd eigen team |
+
+### Environment variables vereist
+
+```
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=   # invite gebruikers aanmaken via Admin API
+RESEND_API_KEY=               # branded welkomstmails versturen
+NEXT_PUBLIC_APP_URL=          # basis-URL voor invite links
+DATABASE_URL=                 # direct pg connectie voor scripts
+```
+
+---
 
 | Layer | Technology |
 |---|---|
@@ -127,9 +162,18 @@ When a coach closes a campaign (`/api/evaluaties/calculate`):
 | Charts | Recharts (via shadcn chart wrapper) |
 | Package manager | pnpm |
 
----
+## Tech stack
 
-## Environment variables
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 15 (App Router, RSC + client components) |
+| Database | Supabase (PostgreSQL) |
+| Auth | Supabase Auth — invite-only flow via Admin API |
+| Email | Resend — branded uitnodigingsmails |
+| ORM | Supabase JS client (`@supabase/ssr`) |
+| Styling | Tailwind CSS + shadcn/ui |
+| Charts | Recharts (via shadcn chart wrapper) |
+| Package manager | pnpm |
 
 ```
 NEXT_PUBLIC_SUPABASE_URL=
@@ -145,13 +189,14 @@ DATABASE_URL=                      # used in scripts only (direct pg connection)
 All scripts are in `/scripts/`. Run with `node scripts/<filename>`.
 
 ```
-08_create_rls_policies.js              — RLS policies for all tables
-09_phase4_questionnaire_schema.js      — Flexible questionnaire schema
-10_seed_questionnaire_1_psychological_safety.js
-15_seed_questionnaire_2_pnsss_final.js
-16_seed_questionnaire_3_smsii_final.js
-17_add_question_text_en.js             — Add English original text column
-18_fix_psych_safety.js                 — Fix Likert labels + reversed display flags
-19_add_norm_columns.js                 — Add norm_mean, norm_sd, has_external_norm; set Edmondson norm
+08_create_rls_policies.js                        — RLS policies for all tables
+09_phase4_questionnaire_schema.js                — Flexible questionnaire schema
+10_seed_questionnaire_1_psychological_safety.js  — Psychologische Veiligheid (7 vragen)
+15_seed_questionnaire_2_pnsss_final.js           — PNSSS (29 vragen, 6 subscalen)
+16_seed_questionnaire_3_smsii_final.js           — SMS-II (18 vragen, 6 subscalen)
+17_add_question_text_en.js                       — Engelse originele teksten toevoegen
+18_fix_psych_safety.js                           — Likert labels + reversed display flags fixen
+19_add_norm_columns.js                           — norm_mean, norm_sd, has_external_norm; Edmondson norm instellen
+20_extend_profiles_invite.js                     — profiles uitbreiden: invited_by, invited_at, team_id, onboarded
 ```
 

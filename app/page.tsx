@@ -9,23 +9,22 @@ export default async function HomePage() {
     redirect('/auth/login')
   }
 
-  // Get user role from profiles table
+  // Try profiles table first, fall back to user_metadata if RLS blocks the query
   const { data: profile } = await supabase
     .from('profiles')
     .select('role')
     .eq('id', user.id)
     .single()
 
-  if (!profile) {
-    redirect('/auth/login')
-  }
+  const role = profile?.role ?? (user.user_metadata?.role as string | undefined)
 
-  // Role-based redirect
-  if (profile.role === 'superuser') {
+  if (role === 'superuser') {
     redirect('/dashboard/superuser')
-  } else if (profile.role === 'coach') {
+  } else if (role === 'coach') {
     redirect('/dashboard/coach')
-  } else {
+  } else if (role === 'teamlid') {
     redirect('/dashboard/teamlid')
+  } else {
+    redirect('/auth/login')
   }
 }

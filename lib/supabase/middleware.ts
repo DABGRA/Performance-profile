@@ -51,8 +51,16 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (user && request.nextUrl.pathname === '/auth/login') {
+    // Role is stored in user_metadata — no extra DB query needed
+    const role = user.user_metadata?.role as string | undefined
     const url = request.nextUrl.clone()
-    url.pathname = '/'
+    if (role === 'superuser') {
+      url.pathname = '/dashboard/superuser'
+    } else if (role === 'coach') {
+      url.pathname = '/dashboard/coach'
+    } else {
+      url.pathname = '/dashboard/teamlid'
+    }
     return NextResponse.redirect(url)
   }
 

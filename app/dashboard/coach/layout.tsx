@@ -48,6 +48,15 @@ const navItems = [
       </svg>
     ),
   },
+  {
+    label: 'Overzicht',
+    href: '/dashboard/coach/performance/overzicht',
+    icon: (
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M3 14h18M10 3v18" />
+      </svg>
+    ),
+  },
 ]
 
 export default async function CoachLayout({ children }: { children: React.ReactNode }) {

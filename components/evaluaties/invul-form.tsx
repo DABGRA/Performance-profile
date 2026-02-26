@@ -24,7 +24,8 @@ export default function EvaluatieInvulForm({ campaign, userId, onBack }: Props) 
   const q = campaign.questionnaire
   const likertMin = q.likert_min
   const likertMax = q.likert_max
-  const range = Array.from({ length: likertMax - likertMin + 1 }, (_, i) => i + likertMin)
+  const forwardRange = Array.from({ length: likertMax - likertMin + 1 }, (_, i) => i + likertMin)
+  const reversedRange = [...forwardRange].reverse()
   const likertLabels: Record<number, string> = q.likert_labels ?? {}
   const minLabel = likertLabels[likertMin] ?? `${likertMin}`
   const maxLabel = likertLabels[likertMax] ?? `${likertMax}`
@@ -60,7 +61,11 @@ export default function EvaluatieInvulForm({ campaign, userId, onBack }: Props) 
 
     for (const question of questionsData) {
       const raw = responses[question.question_number]
-      const score = question.is_reversed ? (likertMax + likertMin) - raw : raw
+      // Only apply math recode if the question has is_reversed=true AND
+      // the questionnaire uses agree/disagree framing (not inaccurate/accurate).
+      // For inaccurate/accurate scales, the reversal is already in the displayed numbers.
+      const useMathRecode = question.is_reversed && q.scoring_method === 'average' && !q.likert_labels?.[1]?.toLowerCase().includes('onnauwkeurig')
+      const score = useMathRecode ? (likertMax + likertMin) - raw : raw
       scoredResponses[String(question.question_number)] = raw
 
       total += score
@@ -197,21 +202,43 @@ export default function EvaluatieInvulForm({ campaign, userId, onBack }: Props) 
               </div>
 
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs text-muted w-28 text-right leading-tight">{minLabel}</span>
-                {range.map(val => (
-                  <button
-                    key={val}
-                    onClick={() => setResponses(r => ({ ...r, [question.question_number]: val }))}
-                    title={likertLabels[val] ?? String(val)}
-                    className={`w-10 h-10 rounded-full text-sm font-medium transition-all ${answered === val
-                      ? 'bg-primary text-primary-foreground scale-110 shadow-md'
-                      : 'bg-accent text-foreground hover:bg-primary/20 border border-border'
-                    }`}
-                  >
-                    {val}
-                  </button>
-                ))}
-                <span className="text-xs text-muted w-28 leading-tight">{maxLabel}</span>
+                {question.is_reversed ? (
+                  <>
+                    <span className="text-xs text-muted w-28 text-right leading-tight">{maxLabel}</span>
+                    {reversedRange.map(val => (
+                      <button
+                        key={val}
+                        onClick={() => setResponses(r => ({ ...r, [question.question_number]: val }))}
+                        title={likertLabels[val] ?? String(val)}
+                        className={`w-10 h-10 rounded-full text-sm font-medium transition-all ${answered === val
+                          ? 'bg-primary text-primary-foreground scale-110 shadow-md'
+                          : 'bg-accent text-foreground hover:bg-primary/20 border border-border'
+                        }`}
+                      >
+                        {val}
+                      </button>
+                    ))}
+                    <span className="text-xs text-muted w-28 leading-tight">{minLabel}</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="text-xs text-muted w-28 text-right leading-tight">{minLabel}</span>
+                    {forwardRange.map(val => (
+                      <button
+                        key={val}
+                        onClick={() => setResponses(r => ({ ...r, [question.question_number]: val }))}
+                        title={likertLabels[val] ?? String(val)}
+                        className={`w-10 h-10 rounded-full text-sm font-medium transition-all ${answered === val
+                          ? 'bg-primary text-primary-foreground scale-110 shadow-md'
+                          : 'bg-accent text-foreground hover:bg-primary/20 border border-border'
+                        }`}
+                      >
+                        {val}
+                      </button>
+                    ))}
+                    <span className="text-xs text-muted w-28 leading-tight">{maxLabel}</span>
+                  </>
+                )}
               </div>
             </div>
           )

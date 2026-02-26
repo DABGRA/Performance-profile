@@ -32,7 +32,7 @@ async function run() {
       SET
         likert_labels = $1,
         scoring_method = 'average'
-      WHERE questionnaire_key = 'psych_safety'
+      WHERE questionnaire_key = 'psychological_safety'
     `, [JSON.stringify({
       1: 'Zeer onnauwkeurig',
       2: 'Onnauwkeurig',
@@ -87,7 +87,7 @@ async function run() {
 
     // Get questionnaire id
     const res = await client.query(
-      `SELECT id FROM questionnaire_definitions WHERE questionnaire_key = 'psych_safety'`
+      `SELECT id FROM questionnaire_definitions WHERE questionnaire_key = 'psychological_safety'`
     )
     if (res.rows.length === 0) {
       console.error('[v0] ERROR: psych_safety questionnaire not found')

@@ -117,7 +117,7 @@ CREATE POLICY "outcome_goals_read" ON public.outcome_goals FOR SELECT
     OR EXISTS (SELECT 1 FROM public.profiles p WHERE p.id = auth.uid() AND p.role = 'superuser'));
 DROP POLICY IF EXISTS "outcome_goals_manage" ON public.outcome_goals;
 CREATE POLICY "outcome_goals_manage" ON public.outcome_goals FOR ALL
-  USING (created_by = auth.uid() OR EXISTS (SELECT 1 FROM public.profiles p WHERE p.id = auth.uid() AND p.role IN ('superuser','coach')));
+  USING (EXISTS (SELECT 1 FROM public.profiles p WHERE p.id = auth.uid() AND p.role IN ('superuser','coach')));
 
 DROP POLICY IF EXISTS "performance_goals_read" ON public.performance_goals;
 CREATE POLICY "performance_goals_read" ON public.performance_goals FOR SELECT
@@ -126,7 +126,7 @@ CREATE POLICY "performance_goals_read" ON public.performance_goals FOR SELECT
     OR EXISTS (SELECT 1 FROM public.profiles p WHERE p.id = auth.uid() AND p.role = 'superuser'));
 DROP POLICY IF EXISTS "performance_goals_manage" ON public.performance_goals;
 CREATE POLICY "performance_goals_manage" ON public.performance_goals FOR ALL
-  USING (created_by = auth.uid() OR EXISTS (SELECT 1 FROM public.profiles p WHERE p.id = auth.uid() AND p.role IN ('superuser','coach')));
+  USING (EXISTS (SELECT 1 FROM public.profiles p WHERE p.id = auth.uid() AND p.role IN ('superuser','coach')));
 
 DROP POLICY IF EXISTS "process_goals_manage" ON public.process_goals;
 CREATE POLICY "process_goals_manage" ON public.process_goals FOR ALL

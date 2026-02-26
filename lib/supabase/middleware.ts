@@ -41,30 +41,20 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (
-    !request.nextUrl.pathname.startsWith('/auth') &&
-    !request.nextUrl.pathname.startsWith('/dashboard') === false &&
-    !user
-  ) {
+  // Protect all dashboard routes — redirect to login if no session
+  if (request.nextUrl.pathname.startsWith('/dashboard') && !user) {
     const url = request.nextUrl.clone()
     url.pathname = '/auth/login'
     return NextResponse.redirect(url)
   }
 
-  // Redirect logged-in users away from login page
+  // Redirect logged-in users away from login page directly to their dashboard
   if (user && request.nextUrl.pathname === '/auth/login') {
     const role = user.user_metadata?.role as string | undefined
     const url = request.nextUrl.clone()
     if (role === 'superuser') url.pathname = '/dashboard/superuser'
     else if (role === 'coach') url.pathname = '/dashboard/coach'
     else url.pathname = '/dashboard/teamlid'
-    return NextResponse.redirect(url)
-  }
-
-  // Protect all dashboard routes
-  if (request.nextUrl.pathname.startsWith('/dashboard') && !user) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/auth/login'
     return NextResponse.redirect(url)
   }
 

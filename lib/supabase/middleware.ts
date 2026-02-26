@@ -43,6 +43,7 @@ export async function updateSession(request: NextRequest) {
 
   if (
     !request.nextUrl.pathname.startsWith('/auth') &&
+    !request.nextUrl.pathname.startsWith('/dashboard') === false &&
     !user
   ) {
     const url = request.nextUrl.clone()
@@ -50,17 +51,20 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
+  // Redirect logged-in users away from login page
   if (user && request.nextUrl.pathname === '/auth/login') {
-    // Role is stored in user_metadata — no extra DB query needed
     const role = user.user_metadata?.role as string | undefined
     const url = request.nextUrl.clone()
-    if (role === 'superuser') {
-      url.pathname = '/dashboard/superuser'
-    } else if (role === 'coach') {
-      url.pathname = '/dashboard/coach'
-    } else {
-      url.pathname = '/dashboard/teamlid'
-    }
+    if (role === 'superuser') url.pathname = '/dashboard/superuser'
+    else if (role === 'coach') url.pathname = '/dashboard/coach'
+    else url.pathname = '/dashboard/teamlid'
+    return NextResponse.redirect(url)
+  }
+
+  // Protect all dashboard routes
+  if (request.nextUrl.pathname.startsWith('/dashboard') && !user) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/auth/login'
     return NextResponse.redirect(url)
   }
 

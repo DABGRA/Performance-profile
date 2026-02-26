@@ -8,6 +8,7 @@ export type QuestionnaireDefinition = {
   total_questions: number
   likert_min: number
   likert_max: number
+  likert_labels: Record<number, string> | null
   scoring_method: 'average' | 'sum' | 'weighted'
   has_special_chart: boolean
   chart_type: string | null

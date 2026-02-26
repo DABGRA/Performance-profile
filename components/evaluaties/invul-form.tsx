@@ -25,6 +25,9 @@ export default function EvaluatieInvulForm({ campaign, userId, onBack }: Props) 
   const likertMin = q.likert_min
   const likertMax = q.likert_max
   const range = Array.from({ length: likertMax - likertMin + 1 }, (_, i) => i + likertMin)
+  const likertLabels: Record<number, string> = q.likert_labels ?? {}
+  const minLabel = likertLabels[likertMin] ?? `${likertMin}`
+  const maxLabel = likertLabels[likertMax] ?? `${likertMax}`
 
   useEffect(() => {
     loadQuestions()
@@ -194,11 +197,12 @@ export default function EvaluatieInvulForm({ campaign, userId, onBack }: Props) 
               </div>
 
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs text-muted w-20 text-right">{likertMin} = helemaal niet</span>
+                <span className="text-xs text-muted w-28 text-right leading-tight">{minLabel}</span>
                 {range.map(val => (
                   <button
                     key={val}
                     onClick={() => setResponses(r => ({ ...r, [question.question_number]: val }))}
+                    title={likertLabels[val] ?? String(val)}
                     className={`w-10 h-10 rounded-full text-sm font-medium transition-all ${answered === val
                       ? 'bg-primary text-primary-foreground scale-110 shadow-md'
                       : 'bg-accent text-foreground hover:bg-primary/20 border border-border'
@@ -207,7 +211,7 @@ export default function EvaluatieInvulForm({ campaign, userId, onBack }: Props) 
                     {val}
                   </button>
                 ))}
-                <span className="text-xs text-muted w-20">{likertMax} = volledig</span>
+                <span className="text-xs text-muted w-28 leading-tight">{maxLabel}</span>
               </div>
             </div>
           )

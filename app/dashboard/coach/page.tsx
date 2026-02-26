@@ -19,7 +19,7 @@ export default async function CoachDashboard() {
   const { count: campaignCount } = await supabase
     .from('evaluation_campaigns')
     .select('*', { count: 'exact', head: true })
-    .eq('created_by', user!.id)
+    .eq('coach_id', user!.id)
     .eq('status', 'sent')
 
   const stats = [

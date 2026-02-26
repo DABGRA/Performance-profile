@@ -15,7 +15,6 @@ export default async function TeamlidDashboard() {
     .from('team_members')
     .select('team_id, teams(name)')
     .eq('user_id', user!.id)
-    .eq('is_active', true)
 
   // Get open evaluations
   const teamIds = memberships?.map((m) => m.team_id) ?? []

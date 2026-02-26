@@ -16,6 +16,7 @@ export default function LoginPage() {
 
     const supabase = createClient()
     const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password })
+    console.log('[v0] signIn result — error:', signInError?.message, '| session:', !!data.session, '| role:', data.user?.user_metadata?.role)
 
     if (signInError || !data.session) {
       setError('Ongeldig e-mailadres of wachtwoord.')

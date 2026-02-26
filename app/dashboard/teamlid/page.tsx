@@ -20,7 +20,7 @@ export default async function TeamlidDashboard() {
   const teamIds = memberships?.map((m) => m.team_id) ?? []
   const { data: openCampaigns } = await supabase
     .from('evaluation_campaigns')
-    .select('id, questionnaire_type, campaign_date, teams(name)')
+    .select('id, period, status, questionnaire_definitions(name), teams(name)')
     .in('team_id', teamIds.length ? teamIds : ['none'])
     .eq('status', 'sent')
 

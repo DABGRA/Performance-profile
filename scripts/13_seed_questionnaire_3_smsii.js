@@ -47,13 +47,15 @@ async function run() {
     // 1. Maak vragenlijst definitie aan
     const defResult = await client.query(`
       INSERT INTO questionnaire_definitions (
-        name, description, version, is_active,
+        name, description, version, questionnaire_key, total_questions, is_active,
         likert_min, likert_max, likert_labels,
         scoring_method, has_special_chart, chart_type
       ) VALUES (
         'Sportmotivatieschaal',
         'Meet de kwaliteit van motivatie in de sport op basis van de zelfdeterminatietheorie. Zes subscalen van amotivatie tot intrinsieke motivatie.',
         '2.0',
+        'sms_ii',
+        18,
         true,
         1, 7,
         '{"1":"Komt helemaal niet overeen","2":"Komt nauwelijks overeen","3":"Komt een beetje overeen","4":"Komt redelijk overeen","5":"Komt behoorlijk overeen","6":"Komt grotendeels overeen","7":"Komt volledig overeen"}',

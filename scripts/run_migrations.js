@@ -1,10 +1,6 @@
-import { readFileSync } from 'fs'
-import { join, dirname } from 'path'
-import { fileURLToPath } from 'url'
-import pg from 'pg'
-
-const { Client } = pg
-const __dirname = dirname(fileURLToPath(import.meta.url))
+const { readFileSync } = require('fs')
+const { join } = require('path')
+const { Client } = require('pg')
 
 const migrations = [
   '01_create_users_and_orgs.sql',
@@ -33,7 +29,6 @@ async function runMigrations() {
       await client.query(sql)
       console.log(`[v0] Done: ${file}`)
     } catch (err) {
-      // Skip "already exists" errors so re-runs are safe
       if (
         err.message.includes('already exists') ||
         err.message.includes('duplicate')

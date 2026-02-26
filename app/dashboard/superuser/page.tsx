@@ -6,7 +6,7 @@ export default async function SuperuserDashboard() {
   const [{ count: orgCount }, { count: teamCount }, { count: userCount }] = await Promise.all([
     supabase.from('organizations').select('*', { count: 'exact', head: true }),
     supabase.from('teams').select('*', { count: 'exact', head: true }),
-    supabase.from('users').select('*', { count: 'exact', head: true }),
+    supabase.from('profiles').select('*', { count: 'exact', head: true }),
   ])
 
   const stats = [

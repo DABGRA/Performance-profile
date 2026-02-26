@@ -58,7 +58,7 @@ export default async function SuperuserLayout({ children }: { children: React.Re
   if (!user) redirect('/auth/login')
 
   const { data: profile } = await supabase
-    .from('users')
+    .from('profiles')
     .select('role, full_name')
     .eq('id', user.id)
     .single()

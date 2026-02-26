@@ -57,7 +57,7 @@ export default async function CoachLayout({ children }: { children: React.ReactN
   if (!user) redirect('/auth/login')
 
   const { data: profile } = await supabase
-    .from('users')
+    .from('profiles')
     .select('role, full_name')
     .eq('id', user.id)
     .single()

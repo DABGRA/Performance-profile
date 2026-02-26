@@ -66,17 +66,21 @@ export default async function SuperuserLayout({ children }: { children: React.Re
 
   if (!user) redirect('/auth/login')
 
+  // Use JWT metadata for role check — avoids RLS recursion issues
+  const role = user.user_metadata?.role as string | undefined
+  if (role !== 'superuser') redirect('/auth/login')
+
   const { data: profile } = await supabase
     .from('profiles')
-    .select('role, full_name')
+    .select('full_name')
     .eq('id', user.id)
     .single()
 
-  if (!profile || profile.role !== 'superuser') redirect('/')
+  const displayName = profile?.full_name ?? user.email ?? 'Beheerder'
 
   return (
     <div className="min-h-screen bg-background flex">
-      <Sidebar navItems={navItems} role="superuser" userName={profile.full_name ?? user.email ?? 'Beheerder'} />
+      <Sidebar navItems={navItems} role="superuser" userName={displayName} />
       <main className="flex-1 ml-56 min-h-screen overflow-y-auto">
         {children}
       </main>
